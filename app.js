@@ -43,7 +43,7 @@ doOnAll(function(controller, deferred){
 setInterval(function(){
     var forDay = (m().day() !== 0) &&(m().day() !== 6);
     var forFive = (m().hour() === 5) && (m().minute() >= 58);
-    var forSix = (m().hour() === 6) && (m().minute() <= 45);
+    var forSix = (m().hour() === 6) && (m().minute() <= 30);
     console.log('Day: ' + m().day());
     console.log('Time: ' + m().hour() + ':' + m().minute());
     if(forDay && (forFive || forSix)){
