@@ -41,25 +41,27 @@ doOnAll(function(controller, deferred){
 });
 
 setInterval(function(){
-    var forDay = (m().day() !== 0) &&(m().day() !== 6);
-    var forFive = (m().hour() === 5) && (m().minute() >= 58);
-    var forSix = (m().hour() === 6) && (m().minute() <= 30);
+    var validDay = (m().day() !== 0) &&(m().day() !== 6);
+    // var forFive = (m().hour() === 5) && (m().minute() >= 58);
+    // var forSix = (m().hour() === 6) && (m().minute() <= 30);
     console.log('Day: ' + m().day());
     console.log('Time: ' + m().hour() + ':' + m().minute());
-    if(forDay && (forFive || forSix)){
+    if(validDay && (m.hour() === 5 && m.minute() === 50)){
         console.log('Turning on...');
         doOnAll(function(controller, deferred){
-            controller.sendCommands(commands.rgbw.on(1), commands.rgbw.whiteMode(zone), commands.rgbw.brightness(100));
-            controller.sendCommands(commands.rgbw.on(2), commands.rgbw.whiteMode(zone), commands.rgbw.brightness(100));
-            // controller.pause(1000);
+            var i;
+            for(i = 1; i <= 10; i += 1){
+                controller.sendCommands(commands.rgbw.on(1), commands.rgbw.whiteMode(zone), commands.rgbw.brightness(i * 10));
+                controller.sendCommands(commands.rgbw.on(2), commands.rgbw.whiteMode(zone), commands.rgbw.brightness(i * 10));
+                controller.pause(60000);
+            }
             deferred.resolve();
         });
-    }else{
+    }else if(m.hour() === 6 && m.minute() === 35){
         console.log('Turning off...');
         doOnAll(function(controller, deferred){
             controller.sendCommands(commands.rgbw.off(1));
             controller.sendCommands(commands.rgbw.off(2));
-            // controller.pause(1000);
             deferred.resolve();
         });
     }
