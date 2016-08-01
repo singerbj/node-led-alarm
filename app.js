@@ -40,15 +40,18 @@ doOnAll(function(controller, deferred){
     deferred.resolve();
 });
 
+var working = false;
 setInterval(function(){
     var validDay = (m().day() !== 0) &&(m().day() !== 6);
     // var forFive = (m().hour() === 5) && (m().minute() >= 58);
     // var forSix = (m().hour() === 6) && (m().minute() <= 30);
     console.log('Day: ' + m().day());
     console.log('Time: ' + m().hour() + ':' + m().minute());
-    if(validDay && (m.hour() === 5 && m.minute() === 50)){
+    //if(validDay && (m().hour() === 5 && m().minute() === 50)){
+    if(!working && validDay && (m().hour() === 21 && m().minute() === 5)){
         console.log('Turning on...');
-        doOnAll(function(controller, deferred){
+        working = true;
+	doOnAll(function(controller, deferred){
             var i;
             for(i = 1; i <= 10; i += 1){
                 controller.sendCommands(commands.rgbw.on(1), commands.rgbw.whiteMode(zone), commands.rgbw.brightness(i * 10));
@@ -57,8 +60,9 @@ setInterval(function(){
             }
             deferred.resolve();
         });
-    }else if(m.hour() === 6 && m.minute() === 35){
+    }else if(m().hour() === 6 && m().minute() === 35){
         console.log('Turning off...');
+        working = false;
         doOnAll(function(controller, deferred){
             controller.sendCommands(commands.rgbw.off(1));
             controller.sendCommands(commands.rgbw.off(2));
